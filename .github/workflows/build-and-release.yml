@@ -32,9 +32,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Create .env file
+      run: |
+        echo "MONGODB=${{ secrets.MONGODB }}" > .env
+
     - name: Build with PyInstaller
       run: |
-        pyinstaller --name=CodePrep --onefile --windowed --add-data "core:core" --add-data "ui:ui" --add-data "utils:utils" --add-data "data:data" --clean --noupx main.py
+        pyinstaller --name=CodePrep --onefile --windowed --add-data "core:core" --add-data "ui:ui" --add-data "utils:utils" --add-data "data:data" --add-data ".env:.env" --clean --noupx main.py
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
@@ -92,3 +96,4 @@ jobs:
         asset_path: ./macos/CodePrep
         asset_name: CodePrep-macOS
         asset_content_type: application/octet-stream
+        

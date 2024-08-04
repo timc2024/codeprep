@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 # Load .env file
 load_dotenv()
 
-MONGODB_URI = os.getenv('MONGODB_URI')
+MONGODB_URI = os.getenv('MONGODB')
 if not MONGODB_URI:
     raise ValueError("MONGODB_URI environment variable is not set. Please check your .env file.")
 
