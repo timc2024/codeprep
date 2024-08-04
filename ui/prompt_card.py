@@ -1,6 +1,7 @@
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtGui import QColor, QIcon, QGuiApplication
 from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QFrame, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
+import qtawesome as qta
 
 class PromptCard(QFrame):
     edit_requested = pyqtSignal(str)
@@ -31,7 +32,7 @@ class PromptCard(QFrame):
         tag_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(tag_label, alignment=Qt.AlignmentFlag.AlignLeft)
 
-        content_preview = self.content[:100] + "..." if len(self.content) > 100 else self.content
+        content_preview = self.content[:200] + "..." if len(self.content) > 100 else self.content
         content_label = QLabel(content_preview)
         content_label.setStyleSheet("""
             color: #abb2bf;
@@ -44,9 +45,10 @@ class PromptCard(QFrame):
         layout.addWidget(content_label)
 
         button_layout = QHBoxLayout()
-        edit_button = QPushButton(QIcon("icons/edit.png"), "Edit")
-        delete_button = QPushButton(QIcon("icons/delete.png"), "Delete")
-        for button in (edit_button, delete_button):
+        edit_button = QPushButton(qta.icon('fa5s.edit'), "Edit")
+        delete_button = QPushButton(qta.icon('fa5s.trash'), "Delete")
+        copy_button = QPushButton(qta.icon('fa5s.copy'), "Copy")
+        for button in (edit_button, delete_button, copy_button):
             button.setStyleSheet("""
                 QPushButton {
                     background-color: #3a3f4b;
@@ -63,8 +65,10 @@ class PromptCard(QFrame):
             button.setIconSize(QSize(20, 20))
         edit_button.clicked.connect(lambda: self.edit_requested.emit(self.prompt_id))
         delete_button.clicked.connect(lambda: self.deleted.emit(self.prompt_id))
+        copy_button.clicked.connect(self.copy_content)
         button_layout.addWidget(edit_button)
         button_layout.addWidget(delete_button)
+        button_layout.addWidget(copy_button)
         button_layout.addStretch()
         layout.addLayout(button_layout)
 
@@ -85,3 +89,8 @@ class PromptCard(QFrame):
         shadow.setYOffset(5)
         shadow.setColor(QColor(0, 0, 0, 80))
         return shadow
+
+    def copy_content(self):
+        clipboard = QGuiApplication.clipboard()
+        clipboard.setText(self.content)
+        

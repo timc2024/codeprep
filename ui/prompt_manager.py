@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QPushButton, QScrollArea,
-                             QLabel, QFrame, QHBoxLayout)
+                             QLabel, QFrame, QHBoxLayout, QSizePolicy)
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize
 from PyQt6.QtGui import QFont, QColor, QIcon
 from .prompt_card import PromptCard
@@ -83,14 +83,20 @@ class PromptManager(QWidget):
         self.load_prompts()
 
     def init_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(20)
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(20)
 
         # Header
         header_label = QLabel("Prompts")
         header_label.setFont(QFont("Arial", 24, QFont.Weight.Bold))
-        layout.addWidget(header_label)
+        main_layout.addWidget(header_label)
+
+        # Content widget (scroll area + button)
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(20)
 
         # Scroll area for cards
         scroll_area = QScrollArea()
@@ -107,15 +113,15 @@ class PromptManager(QWidget):
         self.scroll_layout.setContentsMargins(0, 0, 0, 0)
         self.scroll_layout.setSpacing(15)
         scroll_area.setWidget(scroll_content)
-        layout.addWidget(scroll_area)
-
-        layout.addStretch()
+        content_layout.addWidget(scroll_area, 1)  # Set stretch factor to 1
 
         # Add new card button
-        self.add_button = AnimatedButton("+ Add new prompt", "icons/add.png")
+        self.add_button = AnimatedButton("Add new prompt", "fa5s.plus")
         self.add_button.setFixedHeight(50)
         self.add_button.clicked.connect(self.add_prompt)
-        layout.addWidget(self.add_button)
+        content_layout.addWidget(self.add_button)
+
+        main_layout.addWidget(content_widget, 1)  # Add content widget with stretch
 
         self.setStyleSheet("""
             QWidget {
@@ -126,4 +132,5 @@ class PromptManager(QWidget):
             }
         """)
 
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.load_prompts()

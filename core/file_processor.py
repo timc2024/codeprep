@@ -28,3 +28,4 @@ class FileProcessor:
                 generated_files.add(output_files[file_type])
 
         return list(generated_files)
+    

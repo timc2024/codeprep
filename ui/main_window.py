@@ -1,11 +1,12 @@
 import logging
 
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-                             QLabel, QFrame, QSplitter, QPushButton, QMessageBox)
+                             QLabel, QFrame, QSplitter, QPushButton, QMessageBox, QSizePolicy)
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QFont, QIcon
 from .left_panel import LeftPanel
 from .prompt_manager import PromptManager
+import qtawesome as qta
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -34,10 +35,10 @@ class MainWindow(QMainWindow):
         title_layout.addWidget(title_label)
         title_layout.addStretch()
 
-        for icon_name, slot in [("minimize", self.showMinimized),
-                                ("maximize", self.toggle_maximize),
-                                ("close", self.close)]:
-            button = QPushButton(QIcon(f"icons/{icon_name}.png"), "")
+        for icon_name, slot in [("window-minimize", self.showMinimized),
+                                ("window-maximize", self.toggle_maximize),
+                                ("window-close", self.close)]:
+            button = QPushButton(qta.icon(f'fa5s.{icon_name}'), "")
             button.setFixedSize(30, 30)
             button.clicked.connect(slot)
             button.setStyleSheet("""
@@ -75,7 +76,8 @@ class MainWindow(QMainWindow):
         right_layout = QVBoxLayout(right_wrapper)
         right_layout.setContentsMargins(10, 0, 0, 0)  # Add left margin
         right_layout.addWidget(self.right_panel)
-
+        right_wrapper.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+     
         splitter.addWidget(left_wrapper)
         splitter.addWidget(right_wrapper)
         splitter.setSizes([int(self.width() * 0.6), int(self.width() * 0.4)])

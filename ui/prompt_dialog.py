@@ -4,11 +4,10 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
 class PromptDialog(QDialog):
-    def __init__(self, tag="", title="", content=""):
+    def __init__(self, tag="", content=""):
         super().__init__()
         self.setWindowTitle("Add/Edit Prompt")
         self.tag = tag
-        self.title = title
         self.content = content
         self.init_ui()
 

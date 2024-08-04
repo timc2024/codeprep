@@ -9,6 +9,7 @@ from core.masking_rules import MaskingRules
 from config import SUPPORTED_LANGUAGES, OUTPUT_FOLDER
 from ui.file_list_widget import FileListWidget
 from ui.rule_preview_widget import RulePreviewWidget
+import qtawesome as qta
 
 
 class AnimatedButton(QPushButton):
@@ -23,14 +24,15 @@ class AnimatedButton(QPushButton):
                 border-radius: 6px;
                 font-size: 16px;
                 font-weight: bold;
+                text-align: left;
             }
             QPushButton:hover {
                 background-color: #56b6c2;
             }
         """)
         if icon:
-            self.setIcon(QIcon(icon))
-            self.setIconSize(QSize(24,24))
+            self.setIcon(qta.icon(icon, color='#282c34'))
+            self.setIconSize(QSize(24, 24))
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setEasingCurve(QEasingCurve.Type.OutQuad)
         self.animation.setDuration(100)
@@ -76,21 +78,32 @@ class LeftPanel(QWidget):
 
         # Language selection
         lang_layout = QHBoxLayout()
+        lang_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        lang_icon = QLabel()
+        lang_icon.setPixmap(qta.icon("fa5s.code", color='#abb2bf').pixmap(24, 24))
+        lang_layout.addWidget(lang_icon)
         lang_label = QLabel("Language:")
         lang_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
+        lang_layout.addWidget(lang_label)
+        lang_layout.addStretch()
         self.lang_combo = QComboBox()
         self.lang_combo.addItems(SUPPORTED_LANGUAGES)
         self.lang_combo.setFixedHeight(40)
         self.lang_combo.setFont(QFont("Arial", 14))
         self.lang_combo.currentTextChanged.connect(self.on_language_changed)
-        lang_layout.addWidget(lang_label)
         lang_layout.addWidget(self.lang_combo)
         layout.addLayout(lang_layout)
 
         # File list
+        file_list_layout = QHBoxLayout()
+        file_list_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        file_icon = QLabel()
+        file_icon.setPixmap(qta.icon("fa5s.file-code", color='#abb2bf').pixmap(24, 24))
+        file_list_layout.addWidget(file_icon)
         file_list_label = QLabel("Files:")
         file_list_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
-        layout.addWidget(file_list_label)
+        file_list_layout.addWidget(file_list_label)
+        layout.addLayout(file_list_layout)
 
         self.file_list = FileListWidget()
         self.file_list.setFixedHeight(200)
@@ -98,19 +111,31 @@ class LeftPanel(QWidget):
         layout.addWidget(self.file_list)
 
         # Masking rules
+        masking_rules_layout = QHBoxLayout()
+        masking_rules_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        masking_icon = QLabel()
+        masking_icon.setPixmap(qta.icon("fa5s.mask", color='#abb2bf').pixmap(24, 24))
+        masking_rules_layout.addWidget(masking_icon)
+        masking_rules_layout.addSpacing(5)
         rules_label = QLabel("Masking Rules:")
         rules_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
-        layout.addWidget(rules_label)
+        masking_rules_layout.addWidget(rules_label)
+        layout.addLayout(masking_rules_layout)
 
-        self.rule_preview = RulePreviewWidget(self.masking_rules)  # Use RulePreviewWidget instead of QTextEdit
+        self.rule_preview = RulePreviewWidget(self.masking_rules)
         layout.addWidget(self.rule_preview)
 
         layout.addStretch()
 
         # Generate button
-        self.generate_button = AnimatedButton("Prepare Code for Claude", "icons/generate.png")
+        self.generate_button = AnimatedButton("Prepare Code for Claude", "fa5s.cogs")
         self.generate_button.setFixedHeight(50)
         self.generate_button.clicked.connect(self.on_generate_clicked)
+        self.generate_button.setStyleSheet(self.generate_button.styleSheet() + """
+            QPushButton {
+                text-align: center;
+            }
+        """)
         layout.addWidget(self.generate_button)
 
 
@@ -151,4 +176,4 @@ class LeftPanel(QWidget):
             }
         """)
 
-
+        
