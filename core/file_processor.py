@@ -1,13 +1,16 @@
-from core.language_handlers import get_language_handler
+from core.language_handlers import get_language_handler, PythonHandler
 from utils.file_utils import read_file
 
 class FileProcessor:
     def __init__(self):
-        self.language_handler = None
+        self.language_handler = PythonHandler()
 
     def set_language_handler(self, language):
         self.language_handler = get_language_handler(language)
 
+    def read_file(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
     def process_files(self, files, relative_files, output_folder, masking_rules):
         if not self.language_handler:
             raise ValueError("Language handler not set")

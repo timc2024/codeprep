@@ -7,6 +7,9 @@ from PyQt6.QtGui import QFont, QColor, QIcon
 from core.file_processor import FileProcessor
 from core.masking_rules import MaskingRules
 from config import SUPPORTED_LANGUAGES, OUTPUT_FOLDER
+from ui.file_list_widget import FileListWidget
+from ui.rule_preview_widget import RulePreviewWidget
+
 
 class AnimatedButton(QPushButton):
     def __init__(self, text, icon=None):
@@ -79,6 +82,7 @@ class LeftPanel(QWidget):
         self.lang_combo.addItems(SUPPORTED_LANGUAGES)
         self.lang_combo.setFixedHeight(40)
         self.lang_combo.setFont(QFont("Arial", 14))
+        self.lang_combo.currentTextChanged.connect(self.on_language_changed)
         lang_layout.addWidget(lang_label)
         lang_layout.addWidget(self.lang_combo)
         layout.addLayout(lang_layout)
@@ -88,7 +92,7 @@ class LeftPanel(QWidget):
         file_list_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         layout.addWidget(file_list_label)
 
-        self.file_list = QListWidget()
+        self.file_list = FileListWidget()
         self.file_list.setFixedHeight(200)
         self.file_list.setFont(QFont("Arial", 14))
         layout.addWidget(self.file_list)
@@ -98,11 +102,8 @@ class LeftPanel(QWidget):
         rules_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         layout.addWidget(rules_label)
 
-        self.rules_preview = QTextEdit()
-        self.rules_preview.setPlaceholderText("Drag and drop masking rules file here")
-        self.rules_preview.setFixedHeight(150)
-        self.rules_preview.setFont(QFont("Arial", 14))
-        layout.addWidget(self.rules_preview)
+        self.rule_preview = RulePreviewWidget(self.masking_rules)  # Use RulePreviewWidget instead of QTextEdit
+        layout.addWidget(self.rule_preview)
 
         layout.addStretch()
 
@@ -112,7 +113,6 @@ class LeftPanel(QWidget):
         self.generate_button.clicked.connect(self.on_generate_clicked)
         layout.addWidget(self.generate_button)
 
-        self.lang_combo.currentTextChanged.connect(self.on_language_changed)
 
         self.setStyleSheet("""
             QWidget {

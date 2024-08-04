@@ -1,5 +1,7 @@
+import logging
+
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-                             QLabel, QFrame, QSplitter, QPushButton)
+                             QLabel, QFrame, QSplitter, QPushButton, QMessageBox)
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QFont, QIcon
 from .left_panel import LeftPanel
@@ -59,6 +61,8 @@ class MainWindow(QMainWindow):
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
         self.left_panel = LeftPanel()
+        self.left_panel.generate_clicked.connect(self.generate_code)  # Connect the signal
+        self.left_panel.language_changed.connect(self.left_panel.file_list.set_language)
         self.right_panel = PromptManager()
 
         # Create wrapper widgets for left and right panels
@@ -103,14 +107,32 @@ class MainWindow(QMainWindow):
             self.showMaximized()
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton and event.y() < 40:
+        if event.button() == Qt.MouseButton.LeftButton and event.position().y() < 40:
             self.draggable = True
-            self.offset = event.pos()
+            self.offset = event.position()
 
     def mouseMoveEvent(self, event):
         if self.draggable and event.buttons() & Qt.MouseButton.LeftButton:
-            self.move(self.pos() + event.pos() - self.offset)
+            self.move(self.pos() + event.position().toPoint() - self.offset.toPoint())
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.draggable = False
+
+    def generate_code(self, files, relative_files, output_folder, masking_rules):
+        try:
+            output_files = self.left_panel.file_processor.process_files(files, relative_files, output_folder,
+                                                                        masking_rules)
+
+            if output_files:
+                success_message = "Files generated successfully:\n" + "\n".join(output_files)
+                QMessageBox.information(self, "Success", success_message)
+                logging.info(f"Generated files: {output_files}")
+            else:
+                QMessageBox.warning(self, "Warning",
+                                    "No files were generated. This may be due to an unexpected error or mismatched file types.")
+                logging.warning("No files were generated")
+        except Exception as e:
+            error_message = f"Failed to generate files: {str(e)}"
+            QMessageBox.critical(self, "Error", error_message)
+            logging.error(error_message)
