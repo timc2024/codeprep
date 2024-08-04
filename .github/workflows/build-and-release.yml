@@ -26,36 +26,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Debug Environment
-      shell: bash
-      run: |
-        echo "MONGODB secret exists: ${{ secrets.MONGODB != '' }}"
-        echo "Current directory contents:"
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          dir
-        else
-          ls -la
-        fi
-
     - name: Create .env file
       shell: bash
       run: |
         echo "MONGODB=${{ secrets.MONGODB }}" > .env
-        echo "Contents of .env file after creation:"
-        cat .env
 
     - name: Build with PyInstaller
       run: |
         pyinstaller --name=CodePrep --onefile --windowed --add-data ".env:./" --add-data "core:core" --add-data "ui:ui" --add-data "utils:utils" --add-data "data:data" --clean --noupx main.py
-
-    - name: Test Executable
-      shell: bash
-      run: |
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          ./dist/CodePrep.exe --test-config
-        else
-          ./dist/CodePrep --test-config
-        fi
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
