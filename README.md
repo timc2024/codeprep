@@ -1,24 +1,27 @@
-# Code Privacy Consolidator Pro
+# CodePrep
 
-A tool for consolidating and masking code for privacy, supporting multiple programming languages.
+CodePrep is a Python application designed to help prepare and consolidate code for uploading to Claude or other AI assistants. It provides a user-friendly interface for selecting, processing, and formatting code files from various programming languages.
 
 ## Features
 
-- Support for Android, Python, React, and Flutter projects
-- Drag and drop files and folders
-- Custom masking rules
-- Dark-themed user interface
+- Support for multiple programming languages (Python, Android, React, Flutter)
+- Drag-and-drop interface for easy file selection
+- Code consolidation and formatting
+- Masking rules for privacy protection
+- Dark mode UI for comfortable usage
 
 ## Installation
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/code_privacy_consolidator_pro.git
+   git clone https://github.com/yourusername/codeprep.git
+   cd codeprep
    ```
 
-2. Navigate to the project directory:
+2. Create a virtual environment (optional but recommended):
    ```
-   cd code_privacy_consolidator_pro
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
    ```
 
 3. Install the required dependencies:
@@ -34,15 +37,36 @@ Run the application:
 python src/main.py
 ```
 
-1. Select the project language from the dropdown menu.
-2. Drag and drop files or folders into the file list.
-3. Click "Select File" to choose a masking rules file.
-4. Click "Generate Consolidated Code" to process the files.
+1. Select the programming language from the dropdown menu.
+2. Drag and drop your code files or folders into the application.
+3. (Optional) Add a masking rules file for privacy protection.
+4. Click "Prepare Code for Claude" to process your files.
+5. Select an output folder for the consolidated code.
+
+## Development
+
+CodePrep uses GitHub Actions for continuous integration and deployment. The workflow automatically builds the application and creates a release when a new version tag is pushed.
+
+To create a new release:
+
+1. Update the version number in your project (if applicable).
+2. Commit your changes and push to the main branch.
+3. Create and push a new tag:
+   ```
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+This will trigger the workflow to build the application and create a new release with the executable attached.
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT License](LICENSE)
+
+## Contact
+
+If you have any questions or feedback, please open an issue on the GitHub repository.
