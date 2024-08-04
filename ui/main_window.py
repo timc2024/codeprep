@@ -11,7 +11,7 @@ import qtawesome as qta
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("CodePrep")
+        self.setWindowTitle("CodeExtract")
         self.setGeometry(100, 100, 1400, 900)
         self.init_ui()
 
@@ -21,19 +21,6 @@ class MainWindow(QMainWindow):
         main_layout = QVBoxLayout(central_widget)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-
-        # Custom title bar
-        title_bar = QFrame()
-        title_bar.setStyleSheet("background-color: #1e2127; color: white;")
-        title_bar.setFixedHeight(40)
-        title_layout = QHBoxLayout(title_bar)
-        title_layout.setContentsMargins(10, 0, 10, 0)
-        title_label = QLabel("CodePrep")
-        title_label.setFont(QFont("Arial", 14, QFont.Weight.Bold))
-        title_layout.addWidget(title_label)
-        title_layout.addStretch()
-
-        main_layout.addWidget(title_bar)
 
         # Main content area
         content_widget = QWidget()
