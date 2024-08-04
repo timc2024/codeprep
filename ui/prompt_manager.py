@@ -1,46 +1,11 @@
-from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QPushButton, QScrollArea,
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QScrollArea,
                              QLabel, QFrame, QHBoxLayout, QSizePolicy)
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize
-from PyQt6.QtGui import QFont, QColor, QIcon
+from PyQt6.QtGui import QFont, QColor
 from .prompt_card import PromptCard
 from .prompt_dialog import PromptDialog
 from data.database import db
-
-class AnimatedButton(QPushButton):
-    def __init__(self, text, icon=None):
-        super().__init__(text)
-        self.setStyleSheet("""
-            QPushButton {
-                background-color: #61afef;
-                color: #282c34;
-                border: none;
-                padding: 12px;
-                border-radius: 6px;
-                font-size: 16px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #56b6c2;
-            }
-        """)
-        if icon:
-            self.setIcon(QIcon(icon))
-            self.setIconSize(QSize(24, 24))
-        self.animation = QPropertyAnimation(self, b"geometry")
-        self.animation.setEasingCurve(QEasingCurve.Type.OutQuad)
-        self.animation.setDuration(100)
-
-    def enterEvent(self, event):
-        self.animation.setStartValue(self.geometry())
-        self.animation.setEndValue(self.geometry().adjusted(-2, -2, 2, 2))
-        self.animation.start()
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        self.animation.setStartValue(self.geometry())
-        self.animation.setEndValue(self.geometry().adjusted(2, 2, -2, -2))
-        self.animation.start()
-        super().leaveEvent(event)
+from ui.animated_button import AnimatedButton
 
 class PromptManager(QWidget):
     def __init__(self):
@@ -134,3 +99,4 @@ class PromptManager(QWidget):
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.load_prompts()
+        

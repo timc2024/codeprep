@@ -1,7 +1,7 @@
 import logging
 
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-                             QLabel, QFrame, QSplitter, QPushButton, QMessageBox, QSizePolicy)
+                             QLabel, QFrame, QSplitter, QPushButton, QMessageBox, QSizePolicy, QFileDialog)
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QFont, QIcon
 from .left_panel import LeftPanel
@@ -121,7 +121,11 @@ class MainWindow(QMainWindow):
         if event.button() == Qt.MouseButton.LeftButton:
             self.draggable = False
 
-    def generate_code(self, files, relative_files, output_folder, masking_rules):
+    def generate_code(self, files, relative_files, masking_rules):
+        output_folder = QFileDialog.getExistingDirectory(self, "Select Output Folder")
+        if not output_folder:
+            return
+
         try:
             output_files = self.left_panel.file_processor.process_files(files, relative_files, output_folder,
                                                                         masking_rules)

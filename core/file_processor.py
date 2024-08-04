@@ -1,5 +1,6 @@
 from core.language_handlers import get_language_handler, PythonHandler
 from utils.file_utils import read_file
+from core.masking_rules import MaskingRules
 
 class FileProcessor:
     def __init__(self):
@@ -11,6 +12,7 @@ class FileProcessor:
     def read_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
             return file.read()
+        
     def process_files(self, files, relative_files, output_folder, masking_rules):
         if not self.language_handler:
             raise ValueError("Language handler not set")
@@ -20,7 +22,7 @@ class FileProcessor:
 
         for file_path, relative_path in zip(files, relative_files):
             content = read_file(file_path)
-            if masking_rules and masking_rules.rules:
+            if isinstance(masking_rules, MaskingRules) and masking_rules.rules:
                 content = masking_rules.apply_masking(content)
             processed_content = self.language_handler.process_content(content)
             file_type = self.language_handler.write_to_output(output_files, relative_path, processed_content)
@@ -28,4 +30,3 @@ class FileProcessor:
                 generated_files.add(output_files[file_type])
 
         return list(generated_files)
-    
