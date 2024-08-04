@@ -1,4 +1,3 @@
-import os
 from .base_handler import BaseLanguageHandler
 
 class FlutterHandler(BaseLanguageHandler):
@@ -12,11 +11,3 @@ class FlutterHandler(BaseLanguageHandler):
     def write_to_output(self, output_files, relative_path, content):
         self._write_to_file(output_files['flutter'], relative_path, content)
         return 'flutter'
-
-    def _write_to_file(self, file_path, relative_path, content):
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'a', encoding='utf-8') as f:
-            f.write(f"\n\n# File: {relative_path}\n")
-            f.write("```dart\n")
-            f.write(content)
-            f.write("\n```\n")

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-import os
 from datetime import datetime
+import os
 
 class BaseLanguageHandler(ABC):
     @abstractmethod
@@ -21,3 +21,11 @@ class BaseLanguageHandler(ABC):
     def _create_output_file(self, output_folder, prefix):
         timestamp = self._get_timestamp()
         return os.path.join(output_folder, f"{prefix}_{timestamp}.txt")
+
+    def _write_to_file(self, file_path, relative_path, content):
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'a', encoding='utf-8') as f:
+            f.write(f"\n\n# File: {relative_path}\n")
+            f.write("```\n")
+            f.write(content)
+            f.write("\n```\n")

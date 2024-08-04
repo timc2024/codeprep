@@ -1,4 +1,3 @@
-import os
 from .base_handler import BaseLanguageHandler
 
 class AndroidHandler(BaseLanguageHandler):
@@ -20,11 +19,3 @@ class AndroidHandler(BaseLanguageHandler):
             self._write_to_file(output_files['xml'], relative_path, content)
             return 'xml'
         return None
-
-    def _write_to_file(self, file_path, relative_path, content):
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'a', encoding='utf-8') as f:
-            f.write(f"\n\n# File: {relative_path}\n")
-            f.write("```\n")
-            f.write(content)
-            f.write("\n```\n")

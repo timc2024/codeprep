@@ -1,5 +1,5 @@
-import os
-from src.core.language_handlers import get_language_handler
+from core.language_handlers import get_language_handler
+from utils.file_utils import read_file
 
 class FileProcessor:
     def __init__(self):
@@ -16,7 +16,7 @@ class FileProcessor:
         generated_files = set()
 
         for file_path, relative_path in zip(files, relative_files):
-            content = self.read_file(file_path)
+            content = read_file(file_path)
             if masking_rules and masking_rules.rules:
                 content = masking_rules.apply_masking(content)
             processed_content = self.language_handler.process_content(content)
@@ -25,7 +25,3 @@ class FileProcessor:
                 generated_files.add(output_files[file_type])
 
         return list(generated_files)
-
-    def read_file(self, file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            return file.read()
