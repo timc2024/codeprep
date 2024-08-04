@@ -10,6 +10,9 @@ class PromptDialog(QDialog):
         self.tag = tag
         self.content = content
         self.init_ui()
+        
+        # Set a larger initial size for the dialog, but keep it resizable
+        self.resize(800, 600)  # Width: 800px, Height: 600px
 
     def init_ui(self):
         layout = QVBoxLayout(self)
@@ -31,6 +34,7 @@ class PromptDialog(QDialog):
         self.content_input = QTextEdit(self.content)
         self.content_input.setPlaceholderText("Enter content")
         self.content_input.setFont(QFont("Arial", 14))
+        self.content_input.setMinimumHeight(300)  # Increase the minimum height of the content input
         layout.addWidget(content_label)
         layout.addWidget(self.content_input)
 
@@ -62,6 +66,7 @@ class PromptDialog(QDialog):
                 padding: 8px 16px;
                 border-radius: 4px;
                 font-size: 14px;
+                margin-left: 10px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -71,3 +76,4 @@ class PromptDialog(QDialog):
 
     def get_prompt(self):
         return self.tag_input.text(), self.content_input.toPlainText()
+    

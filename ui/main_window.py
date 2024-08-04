@@ -10,12 +10,10 @@ import qtawesome as qta
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        super().__init__(None, Qt.WindowType.FramelessWindowHint)
-        self.setWindowTitle("CodePrep 2024")
+        super().__init__()
+        self.setWindowTitle("CodePrep")
         self.setGeometry(100, 100, 1400, 900)
         self.init_ui()
-        self.draggable = False
-        self.offset = QPoint()
 
     def init_ui(self):
         central_widget = QWidget()
@@ -30,27 +28,10 @@ class MainWindow(QMainWindow):
         title_bar.setFixedHeight(40)
         title_layout = QHBoxLayout(title_bar)
         title_layout.setContentsMargins(10, 0, 10, 0)
-        title_label = QLabel("CodePrep 2024")
+        title_label = QLabel("CodePrep")
         title_label.setFont(QFont("Arial", 14, QFont.Weight.Bold))
         title_layout.addWidget(title_label)
         title_layout.addStretch()
-
-        for icon_name, slot in [("window-minimize", self.showMinimized),
-                                ("window-maximize", self.toggle_maximize),
-                                ("window-close", self.close)]:
-            button = QPushButton(qta.icon(f'fa5s.{icon_name}'), "")
-            button.setFixedSize(30, 30)
-            button.clicked.connect(slot)
-            button.setStyleSheet("""
-                QPushButton {
-                    background-color: transparent;
-                    border: none;
-                }
-                QPushButton:hover {
-                    background-color: #4a4f5b;
-                }
-            """)
-            title_layout.addWidget(button)
 
         main_layout.addWidget(title_bar)
 
@@ -101,25 +82,6 @@ class MainWindow(QMainWindow):
                 border: none;
             }
         """)
-
-    def toggle_maximize(self):
-        if self.isMaximized():
-            self.showNormal()
-        else:
-            self.showMaximized()
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton and event.position().y() < 40:
-            self.draggable = True
-            self.offset = event.position()
-
-    def mouseMoveEvent(self, event):
-        if self.draggable and event.buttons() & Qt.MouseButton.LeftButton:
-            self.move(self.pos() + event.position().toPoint() - self.offset.toPoint())
-
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.draggable = False
 
     def generate_code(self, files, relative_files, masking_rules):
         output_folder = QFileDialog.getExistingDirectory(self, "Select Output Folder")

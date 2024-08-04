@@ -1,6 +1,6 @@
 import os
 
-from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QTextEdit, QFrame)
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QTextEdit, QFrame, QPushButton)
 from PyQt6.QtCore import pyqtSignal, Qt, QPropertyAnimation, QEasingCurve, QSize
 from PyQt6.QtGui import QFont, QColor
 from core.file_processor import FileProcessor
@@ -57,6 +57,9 @@ class LeftPanel(QWidget):
 
         # File list
         file_layout = self.create_section_layout("fa5s.file-code", "Files:")
+        reset_file_button = self.create_reset_button()
+        reset_file_button.clicked.connect(self.reset_file_list)
+        file_layout.addWidget(reset_file_button)
         layout.addLayout(file_layout)
 
         self.file_list = FileListWidget()
@@ -66,6 +69,9 @@ class LeftPanel(QWidget):
 
         # Masking rules
         masking_layout = self.create_section_layout("fa5s.user-secret", "Masking Rules:")
+        reset_rules_button = self.create_reset_button()
+        reset_rules_button.clicked.connect(self.reset_masking_rules)
+        masking_layout.addWidget(reset_rules_button)
         layout.addLayout(masking_layout)
 
         self.rule_preview = RulePreviewWidget(self.masking_rules)
@@ -141,3 +147,26 @@ class LeftPanel(QWidget):
         section_layout.addWidget(label)
         section_layout.addStretch()
         return section_layout
+
+    def create_reset_button(self):
+        button = QPushButton()
+        button.setIcon(qta.icon('fa5s.undo'))
+        button.setFixedSize(30, 30)
+        button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #4a4f5b;
+            }
+        """)
+        return button
+
+    def reset_file_list(self):
+        self.file_list.clear()
+
+    def reset_masking_rules(self):
+        self.masking_rules = MaskingRules()
+        self.rule_preview.clear()
+        self.rule_preview.setPlaceholderText("No masking rules loaded")
