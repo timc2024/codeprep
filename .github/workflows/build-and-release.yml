@@ -1,14 +1,46 @@
-name: Basic Workflow
+name: Build and Release
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  release:
+    types: [created]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Run a one-line script
-      run: echo Hello, world!
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller --name=CodePrep --onefile --windowed --add-data "src;src" src/main.py
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: CodePrep
+        path: dist/CodePrep.exe
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: CodePrep
+    - name: Upload to release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: CodePrep.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
